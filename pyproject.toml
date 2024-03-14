@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "mystic-chat"
+version = "0.1.0"
+description = "An open source multi modal chat application"
+authors = ["paul hetherington <ph@mystic.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
