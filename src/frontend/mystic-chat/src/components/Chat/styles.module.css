@@ -149,7 +149,7 @@
 
 .sources-container {
     display: flex;
-    width: 200px;
+    width: 300px;
     padding: 10px;
     flex-direction: column;
     align-items: flex-start;
@@ -202,7 +202,7 @@
     color: var(--Brand-secondary, #5854EF);
 
     /* text-large */
-    font-size: 24px;
+    font-size: 18px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -216,7 +216,7 @@
     color: var(--Primary-text, #1C1C1C);
 
     /* text-medium */
-    font-size: 16px;
+    font-size: 14px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;

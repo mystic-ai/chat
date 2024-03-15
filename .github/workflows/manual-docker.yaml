@@ -17,7 +17,7 @@ on:
 run-name: "Building docker images: ${{ github.ref_name }} -> ${{ inputs.docker_tag }}"
 jobs:
   lint:
-    runs-on: [self-hosted, linux]
+    runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v3
       - name: Check formatting

@@ -21,7 +21,7 @@ function ChatMessage({ role, content }) {
                             return (
                                 <CopyBlock
                                     text={_props.children}
-                                    language={_props.className.replace("language-", "")}
+                                    language={_props.className !== undefined && _props.className.replace("language-", "")}
                                     showLineNumbers={true}
                                     theme={nord}
                                     wrapLines={true}
@@ -67,6 +67,7 @@ export default function Chat() {
         function handleEscapeKey(event) {
             if (event.key === "Escape") {
                 setConversation([]);
+                setSources([]);
             }
         }
 

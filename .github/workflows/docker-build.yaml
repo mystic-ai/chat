@@ -34,7 +34,7 @@ on:
         description: Full build
 jobs:
   build-push-image:
-    runs-on: [self-hosted, linux]
+    runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v3
         with:
