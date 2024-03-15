@@ -90,9 +90,8 @@ export default function Chat() {
         setConversation(newConversation);
         let sourcesUpdated = false;
 
-
-
-        fetch("http://localhost:14300/v4/runs/stream", {
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL;
+        fetch(url + "/v4/runs/stream", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
