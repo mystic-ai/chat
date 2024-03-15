@@ -34,7 +34,7 @@ function Social({ title, description }) {
       )}
       {title !== undefined && (
         <>
-          <title>{title} | Flowstream</title>
+          <title>{title} | Mystic</title>
           <meta property="og:title" content={title} key="og:title" />
           <meta
             name="twitter:title"
