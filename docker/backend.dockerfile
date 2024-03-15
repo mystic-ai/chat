@@ -20,7 +20,6 @@ RUN apt update -y \
 
 COPY ./src /app/src
 COPY ./docker/ /app/docker
-COPY ./alembic /app/alembic
 
 COPY README.md .
 

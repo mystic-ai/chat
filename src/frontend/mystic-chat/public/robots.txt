@@ -1,0 +1,4 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow: /v1/*
+Sitemap: https://chat.mystic.ai/sitemap.xml

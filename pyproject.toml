@@ -4,9 +4,16 @@ version = "0.1.0"
 description = "An open source multi modal chat application"
 authors = ["paul hetherington <ph@mystic.ai>"]
 readme = "README.md"
+packages = [
+    { include = "backend", from = "src" },
+]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
+pre-commit = "^3.6.2"
+pytest = "^8.1.1"
+fastapi = "^0.110.0"
+uvicorn = "^0.28.0"
 
 
 [build-system]

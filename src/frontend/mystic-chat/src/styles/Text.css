@@ -1,0 +1,97 @@
+h1 {
+  color: var(--Primary-text, #1c1c1c);
+  /* font-family: Inter; */
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+h2 {
+  color: var(--Primary-text, #1c1c1c);
+  /* font-family: Inter; */
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+h3 {
+  color: var(--Primary-text, #1c1c1c);
+  /* font-family: Inter; */
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+h4 {
+  color: var(--Primary-text, #1c1c1c);
+  /* font-family: Inter; */
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+h5 {
+  color: var(--Primary-text, #1c1c1c);
+  /* font-family: Inter; */
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+p {
+  color: var(--Primary-text, #1c1c1c);
+  /* font-family: Inter; */
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.text-primary {
+  color: var(--Primary-text);
+}
+
+.text-secondary {
+  color: var(--Secondary-text);
+}
+
+.text-large {
+  font-size: 30px;
+}
+
+.text-medium {
+  font-size: 18px;
+}
+
+.text-small {
+  font-size: 14px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+.text-italic {
+  font-style: italic;
+}
+
+.underline {
+  border-bottom: 1px solid var(--Primary-text);
+}

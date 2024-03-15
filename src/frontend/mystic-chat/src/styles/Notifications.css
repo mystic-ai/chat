@@ -1,0 +1,116 @@
+.notification-container {
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 999999;
+  padding: 0px 30px;
+  max-height: calc(100% - 30px);
+  overflow-y: none;
+}
+
+.notification {
+
+  margin-top: 30px;
+  box-shadow: 0 0 10px #c4c4c4;
+  cursor: pointer;
+  position: relative;
+  opacity: 0.9;
+  border-radius: 5px;
+  border: 1px solid var(--Main-border, #3d3d3d);
+  background: var(--Secondary-background, #fff);
+  color: var(--Primary-text, #000);
+  user-select: none;
+  display: flex;
+  width: 200px;
+  padding: 10px;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.notification .message {
+  align-self: stretch;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.notification-message {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notification .title {
+
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  align-self: stretch;
+  margin: 0px;
+}
+
+.notification:hover,
+.notification:focus {
+  opacity: 1;
+}
+
+.notification-enter {
+  visibility: hidden;
+  transform: translate3d(100%, 0, 0);
+}
+
+.notification-enter.notification-enter-active {
+  visibility: visible;
+  transform: translate3d(0, 0, 0);
+  transition: all 0.4s;
+}
+
+.notification-exit {
+  visibility: visible;
+  transform: translate3d(0, 0, 0);
+}
+
+.notification-exit.notification-exit-active {
+  visibility: hidden;
+  transform: translate3d(100%, 0, 0);
+  transition: all 0.4s;
+}
+
+.notification:before {}
+
+.notification-info {
+  /* background-color: #2f96b4; */
+  border-color: var(--Brand-primary);
+}
+
+.notification-info:before {
+  /* content: ""; */
+}
+
+.notification-success {
+  border-color: var(--Success);
+}
+
+.notification-success:before {
+  /* content: ""; */
+}
+
+.notification-warning {
+  border-color: var(--Brand-complimentary);
+}
+
+.notification-warning:before {
+  /* content: ""; */
+}
+
+.notification-error {
+  /* background-color: #bd362f; */
+  border-color: var(--Fail);
+}
+
+.notification-error:before {
+  /* content: "❌"; */
+}

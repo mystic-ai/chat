@@ -1,0 +1,54 @@
+name: Manual docker building
+on:
+  workflow_dispatch:
+    inputs:
+      docker_tag:
+        description: "Docker tag"
+        required: true
+        default: "dev"
+      frontend:
+        description: "Build frontend"
+        required: true
+        type: boolean
+      backend:
+        description: "Build backend"
+        required: true
+        type: boolean
+run-name: "Building docker images: ${{ github.ref_name }} -> ${{ inputs.docker_tag }}"
+jobs:
+  lint:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check formatting
+        uses: psf/black@stable
+        with:
+          version: 22.3.0
+  build-push-frontend:
+    if: ${{ inputs.frontend }}
+    needs:
+      - lint
+    uses: ./.github/workflows/docker-build.yaml
+    with:
+      dockerfile: ./docker/frontend.dockerfile
+      imageName: mystic-chat-frontend
+      imageTag: ${{ inputs.docker_tag }}
+    secrets:
+      DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+      DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      NEXT_PUBLIC_BACKEND_URL: ${{ secrets.NEXT_PUBLIC_BACKEND_URL }}
+      FULL_BUILD: "true"
+  build-push-backend:
+    if: ${{ inputs.backend }}
+    needs:
+      - lint
+    uses: ./.github/workflows/docker-build.yaml
+    with:
+      dockerfile: ./docker/backend.dockerfile
+      imageName: mystic-chat-backend
+      imageTag: ${{ inputs.docker_tag }}
+    secrets:
+      DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+      DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

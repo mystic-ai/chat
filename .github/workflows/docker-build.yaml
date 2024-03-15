@@ -1,0 +1,67 @@
+name: General purpose docker builder
+on:
+  workflow_call:
+    inputs:
+      dockerfile:
+        required: true
+        type: string
+      imageName:
+        required: true
+        type: string
+      imageTag:
+        required: true
+        type: string
+      commitRef:
+        description: "Commit reference to checkout"
+        type: string
+        # Empty value uses the default behaviour of actions/checkout@v3.with.ref
+        default: ""
+    secrets:
+      DOCKER_REGISTRY:
+        required: true
+        description: Docker registry to deploy image
+      DOCKER_LOGIN:
+        required: true
+        description: Docker user for registry login
+      DOCKER_PASSWORD:
+        required: true
+        description: Docker password for registry login
+      NEXT_PUBLIC_BACKEND_URL:
+        required: false
+        description: Backend URL
+      FULL_BUILD:
+        required: false
+        description: Full build
+jobs:
+  build-push-image:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.commitRef }}
+      - uses: docker/setup-buildx-action@v2
+      - uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_LOGIN }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Render image tag
+        id: render-tag
+        run: echo "result=${{ inputs.imageTag }}" >> $GITHUB_OUTPUT
+      - name: Debugging
+        run: |
+          ls
+          echo "result=${{ inputs.imageTag }}"
+          pwd
+      - uses: docker/build-push-action@v5
+        with:
+          file: ${{ inputs.dockerfile }}
+          push: true
+          context: .
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ secrets.DOCKER_REGISTRY }}/${{ inputs.imageName }}:${{ steps.render-tag.outputs.result }}
+          cache-from: type=registry,ref=${{ secrets.DOCKER_REGISTRY }}/${{ inputs.imageName }}:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_REGISTRY }}/${{ inputs.imageName }}:buildcache,mode=max
+          build-args: |
+            NEXT_PUBLIC_BACKEND_URL=${{ secrets.NEXT_PUBLIC_BACKEND_URL }}
+            FULL_BUILD=${{ secrets.FULL_BUILD }}

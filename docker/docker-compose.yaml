@@ -1,0 +1,44 @@
+version: "3.3"
+services:
+  # ------------------------------ Backend api ------------------------------
+  mystic-chat-backend:
+    container_name: mystic-chat-backend
+    image: registry.mystic.ai/mystic-chat-backend:dev
+    build:
+      context: ../
+      dockerfile: ./docker/backend.dockerfile
+      args:
+        INSTALL_DEV: ${INSTALL_DEV-true}
+    env_file:
+      - ../envs/backend.env
+    ports:
+      - 5000:80
+    volumes:
+      - "../src/:/app/src/"
+    command: "poetry run /app/docker/start-reload.sh backend"
+
+  # ------------------------------ Frontend ------------------------------
+  mystic-chat-frontend:
+    container_name: mystic-chat-frontend
+    image: registry.mystic.ai/mystic-chat-frontend:dev
+    build:
+      context: ../
+      dockerfile: ./docker/frontend.dockerfile
+      args:
+        FULL_BUILD: "false"
+    volumes:
+      - "../src/frontend/mystic-chat/src:/app/src/"
+      - "../src/frontend/mystic-chat/public:/app/public/"
+      - "../src/frontend/mystic-chat/pages:/app/pages/"
+  # ------------------------------ Nginx ------------------------------
+  nginx:
+    image: nginx
+    container_name: mystic-chat-nginx
+    ports:
+      - 13000:80
+      - 3000:3000
+    volumes:
+      - ./service_configs/nginx/:/etc/nginx/conf.d:ro
+    depends_on:
+      - mystic-chat-backend
+      # - mystic-chat-frontend

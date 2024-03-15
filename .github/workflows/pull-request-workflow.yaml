@@ -1,0 +1,64 @@
+name: Merge to main checks
+on: [pull_request]
+jobs:
+  lint:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: psf/black@stable
+        with:
+          version: 23.9.1
+
+  flake8-lint:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: py-actions/flake8@v2
+        with:
+          ignore: "E203,W503"
+          max-line-length: "88"
+          path: "./"
+  pyright:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.4.2
+      - name: Install dependencies
+        run: |
+          poetry install --no-interaction
+          echo "$(poetry env info --path)/bin" >> $GITHUB_PATH
+      - uses: jakebailey/pyright-action@v1
+        with:
+          version: 1.1.311
+        continue-on-error: true
+  test:
+    runs-on: [ubuntu-latest]
+    strategy:
+      matrix:
+        python-version: ["3.10", 3.11]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.4.2
+      - name: Install dependencies
+        run: |
+          poetry install --no-interaction
+      - name: test
+        run: |
+          poetry run pytest
