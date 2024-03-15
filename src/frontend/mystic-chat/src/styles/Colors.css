@@ -1,0 +1,88 @@
+:root {
+  /* Branding */
+  --Brand-primary: #AD30F4;
+  --Brand-secondary: #5854EF;
+  --Brand-tertiary: #41D9FF;
+  --Brand-monochrome: #960ce5;
+  --Brand-complimentary: #77F430;
+  --Brand-light: #e6f6ff;
+
+  --Brand-primary-dim: #004166;
+  --Brand-secondary-dim: #000d64;
+  --Brand-tertiary-dim: #006658;
+  --Brand-monochrome-dim: #004166;
+  --Brand-complimentary-dim: #662500;
+
+  /* General */
+
+  --Primary-text: #f5f5f5;
+  --Secondary-text: #8a8a8a;
+  --Danger-text: #e73d7d;
+
+  --Main-background: #161616;
+  --Secondary-background: #4b4b4b;
+  --Tertiary-background: #545454;
+
+  --Main-border: #fff;
+  --Light-border: #717171;
+
+  --Success: #82d200;
+  --Fail: #e73d7d;
+
+  /* Buttons */
+  --Exit-button: #3e3e3e;
+  --Exit-button-hover: #5e5e5e;
+  --Primary-button: #2e2e2e;
+  --Primary-button-text: #f5f5f5;
+  --Primary-button-hover: #565656;
+  --Primary-button-click: #e3e3e3;
+  --Primary-button-click-text: #717171;
+  --Primary-button-disabled: #737373;
+  --Primary-button-disabled-text: #9f9f9f;
+  --Secondary-button: var(--Main-background);
+  --Secondary-button-border: var(--Main-border);
+
+  --Danger-button: var(--Primary-button);
+  --Danger-button-hover: var(--Primary-button-hover);
+  --Danger-button-click: var(--Primary-button-click);
+  --Danger-button-click-text: var(--Primary-button-click-text);
+  --Danger-button-disabled: var(--Primary-button-disabled);
+  --Danger-button-disabled-text: var(--Primary-button-disabled-text);
+  --Danger-button-border: #e73d7d;
+}
+
+body[data-theme="light"] {
+  /* General */
+
+  --Primary-text: #1c1c1c;
+  --Secondary-text: #8a8a8a;
+  --Danger-text: #e73d7d;
+
+  --Main-background: #ffffff;
+  --Secondary-background: rgb(226, 226, 226);
+  --Tertiary-background: #f5f5f5;
+
+  --Main-border: #818181;
+  --Light-border: #c0c0c0;
+
+  /* Buttons */
+  --Exit-button: #e6e6e6;
+  --Exit-button-hover: #5e5e5e;
+  --Primary-button: #2e2e2e;
+  --Primary-button-text: #f5f5f5;
+  --Primary-button-hover: #565656;
+  --Primary-button-click: #e3e3e3;
+  --Primary-button-click-text: #717171;
+  --Primary-button-disabled: #737373;
+  --Primary-button-disabled-text: #9f9f9f;
+  --Secondary-button: var(--Main-background);
+  --Secondary-button-border: var(--Main-border);
+
+  --Danger-button: var(--Primary-button);
+  --Danger-button-hover: var(--Primary-button-hover);
+  --Danger-button-click: var(--Primary-button-click);
+  --Danger-button-click-text: var(--Primary-button-click-text);
+  --Danger-button-disabled: var(--Primary-button-disabled);
+  --Danger-button-disabled-text: var(--Primary-button-disabled-text);
+  --Danger-button-border: #e73d7d;
+}
