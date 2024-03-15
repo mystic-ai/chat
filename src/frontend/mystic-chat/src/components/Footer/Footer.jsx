@@ -8,7 +8,7 @@ function Footer(props) {
         {(props.displayToggle === undefined ||
           props.displayToggle === true) && <DisplayToggle />}
       </div>
-      <p>Made by <a href="https://www.mystic.ai/" target="_blank" referrerPolicy="origin">Mystic AI</a>.</p>
+      <p>Made by <a href="https://www.mystic.ai/" target="_blank" referrerPolicy="origin">Mystic AI</a>. &#129497;</p>
     </div>
   );
 }

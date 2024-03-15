@@ -221,3 +221,16 @@
     font-weight: 400;
     line-height: normal;
 }
+
+/* MARKDOWN */
+
+.markdown {
+    padding: 0;
+    margin: 0;
+}
+
+.markdown p {
+
+    padding: 0;
+    margin: 0;
+}
