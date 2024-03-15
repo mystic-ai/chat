@@ -26,6 +26,7 @@ services:
       dockerfile: ./docker/frontend.dockerfile
       args:
         FULL_BUILD: "false"
+        NEXT_PUBLIC_BACKEND_URL: "http://localhost:14300"
     volumes:
       - "../src/frontend/mystic-chat/src:/app/src/"
       - "../src/frontend/mystic-chat/public:/app/public/"

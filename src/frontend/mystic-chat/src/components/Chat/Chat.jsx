@@ -92,7 +92,7 @@ export default function Chat() {
 
 
 
-        fetch("http://localhost:14300/v4/runs", {
+        fetch("http://localhost:14300/v4/runs/stream", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
