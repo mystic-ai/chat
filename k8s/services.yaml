@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mystic-chat-frontend-service
+  namespace: mystic-chat
+spec:
+  type: LoadBalancer
+  selector:
+    app: mystic-chat-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+      name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mystic-chat-backend-service
+  namespace: mystic-chat
+spec:
+  type: LoadBalancer
+  selector:
+    app: mystic-chat-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mystic-chat-llm-service
+  namespace: mystic-chat
+spec:
+  type: LoadBalancer
+  selector:
+    app: mystic-chat-llm
+  ports:
+    - protocol: TCP
+      port: 14300
+      targetPort: 14300
+      name: http

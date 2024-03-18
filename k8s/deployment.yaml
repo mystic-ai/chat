@@ -1,0 +1,131 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mystic-chat-frontend
+  namespace: mystic-chat
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: mystic-chat-frontend
+  template:
+    metadata:
+      labels:
+        app: mystic-chat-frontend
+    spec:
+      imagePullSecrets:
+        - name: mystic-registry
+      containers:
+        - name: mystic-chat-frontend
+          image: registry.mystic.ai/mystic-chat-frontend:production
+          imagePullPolicy: Always
+          command: ["npm", "run", "start"]
+          ports:
+            - containerPort: 3000
+              name: http
+          resources:
+            requests:
+              memory: "500Mi"
+              cpu: "400m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mystic-chat-backend
+  namespace: mystic-chat
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: mystic-chat-backend
+  template:
+    metadata:
+      labels:
+        app: mystic-chat-backend
+    spec:
+      imagePullSecrets:
+        - name: mystic-registry
+      containers:
+        - name: mystic-chat-backend
+          image: registry.mystic.ai/mystic-chat-backend:production
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "200Mi"
+              cpu: "200m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mystic-chat-llm
+  namespace: mystic-chat
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mystic-chat-llm
+  template:
+    metadata:
+      labels:
+        app: mystic-chat-llm
+    spec:
+      imagePullSecrets:
+        - name: mystic-registry
+      nodeSelector:
+        accelerators: x1-nvidia-a100-20gb
+      containers:
+        - name: mystic-chat-llm
+          image: registry.mystic.ai/mystic-chat:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 14300
+              name: http
+          resources:
+            requests:
+              nvidia.com/gpu: 1
+            limits:
+              nvidia.com/gpu: 1
+          env:
+            - name: LD_LIBRARY_PATH
+              value: /usr/local/nvidia/lib:/usr/local/nvidia/lib64
+            - name: PATH
+              value: $PATH:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: all
+            - name: NVIDIA_DRIVER_CAPABILITIES
+              value: compute,utility
+            - name: PYTHONUNBUFFERED
+              value: "1"
+            - name: USE_JSON_LOGGING
+              value: "1"
+
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: 14300
+
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /v4/container/state
+              port: 14300
+
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+
+          startupProbe:
+            httpGet:
+              path: /status
+              port: 14300
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5

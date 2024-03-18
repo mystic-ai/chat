@@ -19,9 +19,12 @@ COPY ./src/frontend/mystic-chat/src ./src
 COPY ./src/frontend/mystic-chat/pages ./pages
 COPY ./src/frontend/mystic-chat/public ./public
 
-ARG NEXT_PUBLIC_BACKEND_URL="http://mystic-chat-backend"
+ARG NEXT_PUBLIC_BACKEND_URL="http://localhost:14300"
+ARG FULL_BUILD="false"
 
 ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
+ENV FULL_BUILD=$FULL_BUILD
+
 RUN if [ "$FULL_BUILD" = "true" ] ; then npm run build; fi
 
 CMD ["npm", "run", "dev"]

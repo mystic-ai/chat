@@ -26,10 +26,12 @@ services:
       dockerfile: ./docker/frontend.dockerfile
       args:
         FULL_BUILD: "false"
+
     volumes:
       - "../src/frontend/mystic-chat/src:/app/src/"
       - "../src/frontend/mystic-chat/public:/app/public/"
       - "../src/frontend/mystic-chat/pages:/app/pages/"
+    # Run next.js full static serving for prod
   # ------------------------------ Nginx ------------------------------
   nginx:
     image: nginx
