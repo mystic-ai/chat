@@ -1,0 +1,65 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mystic-chat-ingress
+  namespace: mystic-chat
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: mystic-chat
+    networking.gke.io/managed-certificates: mystic-chat-certificate
+    ingressClassName: "gce"
+spec:
+  # defaultBackend:
+  #   service:
+  #     name: mystic-chat-frontend-service
+  #     port:
+  #       number: 80
+  rules:
+    - http:
+        paths:
+          - path: /v4
+            pathType: Prefix
+            backend:
+              service:
+                name: mystic-chat-llm-service
+                port:
+                  number: 14300
+                  # name: http
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mystic-chat-frontend-service
+                port:
+                  # number: 80
+                  name: http
+  #   - http:
+  #       paths:
+  #         - path: /v1
+  #           pathType: Prefix
+  #           backend:
+  #             service:
+  #               name: mystic-chat-backend-service
+  #               port:
+  #                 number: 80
+  #         # for OpenAPI schema
+  #         - path: /openapi.json
+  #           pathType: Exact
+  #           backend:
+  #             service:
+  #               name: mystic-chat-backend-service
+  #               port:
+  #                 number: 80
+  #         - path: /sitemap.xml
+  #           pathType: Prefix
+  #           backend:
+  #             service:
+  #               name: mystic-chat-backend-service
+  #               port:
+  #                 number: 80
+  #         - path: /redoc
+  #           pathType: Prefix
+  #           backend:
+  #             service:
+  #               name: mystic-chat-backend-service
+  #               port:
+  #                 number: 80

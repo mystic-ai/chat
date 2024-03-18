@@ -1,0 +1,11 @@
+kind: compute#urlMap
+name: mystic-chat-web-map-http
+defaultUrlRedirect:
+  redirectResponseCode: MOVED_PERMANENTLY_DEFAULT
+  httpsRedirect: True
+tests:
+  - description: Redirect to https
+    host: "chat.mystic.ai"
+    path: "/"
+    expectedOutputUrl: https://chat.mystic.ai/
+    expectedRedirectResponseCode: 301
