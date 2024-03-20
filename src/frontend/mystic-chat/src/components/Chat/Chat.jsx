@@ -3,7 +3,10 @@ import classNames from 'classnames';
 import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import Markdown from 'react-markdown';
-import { CopyBlock, nord } from "react-code-blocks";
+// import { CopyBlock, dracula } from "react-code-blocks";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import syntaxHighlighterStyleNightOwl from "./SHStyle";
+
 
 function ChatMessage({ role, content }) {
     return (
@@ -17,19 +20,32 @@ function ChatMessage({ role, content }) {
                             _props.children.includes("\n")
                         ) {
                             return (
-                                <CopyBlock
-                                    text={_props.children}
-                                    language={_props.className !== undefined && _props.className.replace("language-", "")}
-                                    showLineNumbers={true}
-                                    theme={nord}
-                                    wrapLines={true}
+                                // <CopyBlock
+                                //     text={_props.children}
+                                //     language={_props.className !== undefined && _props.className.replace("language-", "")}
+                                //     // showLineNumbers={true}
+                                //     theme={dracula}
+                                //     wrapLines={true}
+                                //     customStyle={{
+                                //         fontSize: "14px",
+                                //         display: "flex",
+                                //         // maxWidth: "100%",
+                                //         maxWidth: "600px",
+                                //         width: "100%",
+                                //     }}
+                                // />
+                                <SyntaxHighlighter language={_props.className !== undefined && _props.className.replace("language-", "")}
+                                    style={syntaxHighlighterStyleNightOwl}
                                     customStyle={{
                                         fontSize: "14px",
                                         display: "flex",
-                                        maxWidth: "100%",
+                                        maxWidth: "525px",
                                         width: "100%",
+                                        borderRadius: "5px",
                                     }}
-                                />
+                                >
+                                    {_props.children}
+                                </SyntaxHighlighter>
                             );
                         }
 
@@ -132,7 +148,6 @@ export default function Chat() {
 
             reader.read().then(function processText({ done, value }) {
                 if (done) {
-                    console.log("Stream complete");
                     setModelStreaming(false);
                     return;
                 }
@@ -169,7 +184,6 @@ export default function Chat() {
                     }
                     setConversation(newConversation2);
 
-                    console.log(json);
                     newConversation = newConversation2;
                     if (!sourcesUpdated) {
                         setSources(json.outputs[1].value);
@@ -190,7 +204,6 @@ export default function Chat() {
                 });
 
             }).finally(() => {
-                console.log("finally1")
             }).catch(error => {
                 // setModelStreaming(false);
                 // console.error(error);
@@ -198,7 +211,6 @@ export default function Chat() {
 
         }).finally(() => {
             // setModelStreaming(false);
-            console.log("finally2")
         }).catch(error => {
             // setModelStreaming(false);
             // console.error(error);
@@ -266,11 +278,12 @@ export default function Chat() {
                         conversation.length == 0 && (
                             <div className={styles["example-input-container"]}>
                                 {
-                                    ["Tell me about python", "What time is it in the UK?", "How do I create a basic server in cpp?", "What API libraries are there in python? Include some code please"].map((exampleInput) => {
+                                    ["Tell me about python", "What time is it in the UK?", "How do I create a basic server in cpp?", "What API libraries are there in python? Include some code please"].map((exampleInput, index) => {
                                         return (
                                             <div className={classNames(styles["example-input"], "text-small", "text-primary")} onClick={() => {
                                                 sendMessage(exampleInput);
-                                            }}>
+                                            }}
+                                                key={index}>
                                                 {exampleInput}
                                             </div>
                                         )
