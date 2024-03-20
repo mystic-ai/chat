@@ -161,3 +161,6 @@ cython_debug/
 
 envs/
 *node_modules
+
+/pipelines/*/transformers
+docker/service_volumes

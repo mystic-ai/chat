@@ -101,7 +101,10 @@ spec:
               value: "1"
             - name: USE_JSON_LOGGING
               value: "1"
-
+            - name: GOOGLE_SEARCH_ENGINE_ID
+              value: "47a3a8f5dc7d44261"
+            - name: GOOGLE_SEARCH_ENGINE_KEY
+              value: "AIzaSyDKoUKu3QVIUnuCNQeVJ_5ySj4u_dMwb-Y"
           livenessProbe:
             httpGet:
               path: /status
