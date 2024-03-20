@@ -18,9 +18,10 @@ export default function Header({
   return (
     <div className={classNames("flex-row", styles.header)} >
 
-      <Image src="/assets/mystic-logo.png" width={87} height={30} style={{
+      <Link href="https://www.mystic.ai/" target="_blank" ><Image src="/assets/mystic-logo.png" width={87} height={30} style={{
         objectFit: "contain",
       }} />
+      </Link>
 
       <a href="https://github.com/mystic-ai/chat" target="_blank" referrerPolicy="origin">
         <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/mystic-ai/chat" />
