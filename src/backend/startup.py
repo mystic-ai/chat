@@ -1,8 +1,10 @@
 import logging
 
-from fastapi import FastAPI, Request
+from fastapi import APIRouter, FastAPI, Request
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
+
+from backend.routes import run as run_routes
 
 logger = logging.getLogger("uvicorn")
 
@@ -15,6 +17,12 @@ def create_app() -> FastAPI:
 
     setup_oapi(app)
     setup_middlewares(app)
+
+    router = APIRouter(prefix="/v1", tags=["v1"])
+
+    router.include_router(run_routes.router)
+
+    app.include_router(router)
 
     return app
 

@@ -101,7 +101,6 @@ spec:
               value: "1"
             - name: USE_JSON_LOGGING
               value: "1"
-
           livenessProbe:
             httpGet:
               path: /status

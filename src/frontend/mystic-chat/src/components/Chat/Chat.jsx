@@ -5,8 +5,6 @@ import { useState, useEffect, useRef } from 'react';
 import Markdown from 'react-markdown';
 import { CopyBlock, nord } from "react-code-blocks";
 
-// Markdown
-
 function ChatMessage({ role, content }) {
     return (
         <div className={classNames(styles["chat-message"], role === "assistant" ? styles["chat-box-assistant"] : undefined)}>
@@ -90,8 +88,7 @@ export default function Chat() {
         setConversation(newConversation);
         let sourcesUpdated = false;
 
-        const url = process.env.NEXT_PUBLIC_BACKEND_URL;
-        fetch(url + "/v4/runs/stream", {
+        fetch("/v1/runs/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -143,20 +140,20 @@ export default function Chat() {
                     let newConversation2 = newConversation.slice();
 
                     if (newConversation2.length > 0 && newConversation2[newConversation2.length - 1].role === "assistant") {
-                        newConversation2[newConversation2.length - 1].content += json.outputs[1].value[0].content;
+                        newConversation2[newConversation2.length - 1].content += json.outputs[0].value[0].content;
                     } else {
                         newConversation2.push({
 
                             role: "assistant",
-                            content: json.outputs[1].value[0].content
+                            content: json.outputs[0].value[0].content
                         });
                     }
                     setConversation(newConversation2);
 
-
+                    console.log(json);
                     newConversation = newConversation2;
                     if (!sourcesUpdated) {
-                        setSources(json.outputs[0].value);
+                        setSources(json.outputs[1].value);
                         sourcesUpdated = true;
                     }
 

@@ -11,6 +11,8 @@ services:
         INSTALL_DEV: ${INSTALL_DEV-true}
     env_file:
       - ../envs/backend.env
+    environment:
+      - MODEL_URL=http://mystic-chat-llm:14300
     ports:
       - 5000:80
     volumes:
@@ -31,7 +33,41 @@ services:
       - "../src/frontend/mystic-chat/src:/app/src/"
       - "../src/frontend/mystic-chat/public:/app/public/"
       - "../src/frontend/mystic-chat/pages:/app/pages/"
-    # Run next.js full static serving for prod
+  # ------------------------------ LLM ------------------------------
+  mystic-chat-llm:
+    image: registry.mystic.ai/mystic-chat:latest
+    container_name: mystic-chat-llm
+    build:
+      context: ../pipelines/mistral-7b-streaming
+      dockerfile: pipeline.dockerfile
+      args:
+        INSTALL_DEV: ${INSTALL_DEV-true}
+    command:
+      [
+        "uvicorn",
+        "pipeline.container.startup:create_app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "14300",
+        "--factory",
+        "--reload"
+      ]
+    environment:
+      - DEBUG=1
+      - LOG_LEVEL=DEBUG
+      - FASTAPI_ENV=development
+    volumes:
+      - ./service_volumes/llm/:/root/.cache
+      - ../pipelines/mistral-7b-streaming:/app
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
+
   # ------------------------------ Nginx ------------------------------
   nginx:
     image: nginx

@@ -1,0 +1,17 @@
+runtime:
+  container_commands:
+    - apt-get update
+    - apt-get install -y git
+    - git clone https://github.com/paulcjh/transformers.git
+  python:
+    version: "3.11"
+    requirements:
+      - "-e ./transformers"
+      - "pipeline-ai"
+      - "torch==2.0.1"
+      - "accelerate"
+accelerators: ["nvidia_a100"]
+pipeline_graph: new_pipeline:my_pipeline
+pipeline_name: mistral-7b-streaming
+extras:
+  model_type: "chat"
