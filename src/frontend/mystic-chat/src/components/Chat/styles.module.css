@@ -278,6 +278,9 @@
 
     border-radius: 5px;
     background: var(--Secondary-background, #E2E2E2);
+
+    user-select: none;
+    cursor: pointer;
 }
 
 
