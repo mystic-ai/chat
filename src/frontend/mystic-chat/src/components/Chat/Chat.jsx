@@ -13,7 +13,7 @@ function ChatMessage({ role, content }) {
         <div className={classNames(styles["chat-message"], role === "assistant" ? styles["chat-box-assistant"] : undefined)}>
             <Image alt="chat-user" src={role === "assistant" ? "/assets/mystic-icon.svg" : "/assets/user-icon.svg"} width={40} height={40} />
             <div className={styles["chat-message-content"]}>
-                <Markdown className={styles["markdown"]} components={{
+                {content !== "" ? <Markdown className={styles["markdown"]} components={{
                     code(_props) {
                         if (
                             _props.children !== undefined &&
@@ -55,7 +55,8 @@ function ChatMessage({ role, content }) {
                     },
                 }}>
                     {content}
-                </Markdown>
+
+                </Markdown> : <div style={{ height: "100%", width: "30px" }} className={styles["loader"]} ></div>}
             </div>
         </div>
     )
@@ -116,10 +117,23 @@ export default function Chat() {
         let newConversation = [...conversation, {
             role: "user",
             content: inputUsing
+        }, {
+            role: "assistant",
+            content: ""
+
         }];
+        // let newConversation = [...conversation, {
+        //     role: "user",
+        //     content: inputUsing
+        // },];
         setInput("");
-        setConversation(newConversation);
         let sourcesUpdated = false;
+        // newConversation.push({
+
+        //     role: "assistant",
+        //     content: ""
+        // });
+        setConversation(newConversation);
 
 
         fetch("/v1/runs/", {
@@ -132,7 +146,7 @@ export default function Chat() {
                     {
                         type: "array",
                         value: [
-                            newConversation
+                            newConversation.slice(0, newConversation.length - 1)
                         ]
                     }, {
                         type: "dictionary",
@@ -172,7 +186,7 @@ export default function Chat() {
                 jsonsToParse.forEach(jsonString => {
                     const json = JSON.parse(jsonString);
                     let newConversation2 = newConversation.slice();
-
+                    console.log(newConversation2);
                     if (newConversation2.length > 0 && newConversation2[newConversation2.length - 1].role === "assistant") {
                         newConversation2[newConversation2.length - 1].content += json.outputs[0].value[0].content;
                     } else {
@@ -199,21 +213,18 @@ export default function Chat() {
                 });
 
                 reader.read().then(processText).catch(error => {
-                    // setModelStreaming(false);
-                    // console.error(error);
+                    console.error(error);
                 });
 
             }).finally(() => {
             }).catch(error => {
-                // setModelStreaming(false);
-                // console.error(error);
+                console.error(error);
             })
 
         }).finally(() => {
-            // setModelStreaming(false);
+
         }).catch(error => {
-            // setModelStreaming(false);
-            // console.error(error);
+            console.error(error);
         });
     }
 
