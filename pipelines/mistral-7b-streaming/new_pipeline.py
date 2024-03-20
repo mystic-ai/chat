@@ -21,7 +21,6 @@ class ChatStreamer(TextIteratorStreamer):
         self.index = 0
 
     def __next__(self):
-
         value = self.text_queue.get(timeout=self.timeout, block=True)
 
         if value == self.stop_signal:
@@ -31,7 +30,6 @@ class ChatStreamer(TextIteratorStreamer):
             return [{"role": "assistant", "content": value}]
 
     def put(self, value):
-
         if len(value.shape) > 1 and value.shape[0] > 1:
             raise ValueError("TextStreamer only supports batch size 1")
         elif len(value.shape) > 1:
@@ -62,7 +60,6 @@ class ChatStreamer(TextIteratorStreamer):
 
 @entity
 class Mistral7B:
-
     @pipe(on_startup=True, run_once=True)
     def load_model(self) -> None:
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
