@@ -55,6 +55,7 @@ export default function Chat() {
     ]);
 
     const [input, setInput] = useState("");
+    const [modelStreaming, setModelStreaming] = useState(false);
 
     // Scroll to the bottom of the conversation
     const messageContainerRef = useRef(null);
@@ -76,17 +77,34 @@ export default function Chat() {
         };
     }, []);
 
+    function sendMessage(immediateInput) {
 
 
-    function sendMessage() {
-        // setConversation();
+        if (input === "" && immediateInput === undefined) {
+            return;
+        }
+
+        if (immediateInput !== undefined) {
+            setInput(immediateInput);
+        }
+
+        if (modelStreaming) {
+            return;
+        }
+
+        const inputUsing = immediateInput !== undefined ? immediateInput : input;
+
+
+
+        setModelStreaming(true);
         let newConversation = [...conversation, {
             role: "user",
-            content: input
+            content: inputUsing
         }];
         setInput("");
         setConversation(newConversation);
         let sourcesUpdated = false;
+
 
         fetch("/v1/runs/", {
             method: "POST",
@@ -115,6 +133,7 @@ export default function Chat() {
             reader.read().then(function processText({ done, value }) {
                 if (done) {
                     console.log("Stream complete");
+                    setModelStreaming(false);
                     return;
                 }
                 const text = decoder.decode(value, { stream: true });
@@ -166,14 +185,22 @@ export default function Chat() {
                 });
 
                 reader.read().then(processText).catch(error => {
+                    // setModelStreaming(false);
                     // console.error(error);
                 });
 
+            }).finally(() => {
+                console.log("finally1")
             }).catch(error => {
+                // setModelStreaming(false);
                 // console.error(error);
             })
-                ;
+
+        }).finally(() => {
+            // setModelStreaming(false);
+            console.log("finally2")
         }).catch(error => {
+            // setModelStreaming(false);
             // console.error(error);
         });
     }
@@ -182,34 +209,41 @@ export default function Chat() {
         <div className={styles["chat-body"]}>
             <div className={styles["chat-column"]}>
                 <div className={styles["chat-container"]} ref={messageContainerRef}>
-                    <div className={styles["chat-header"]}>
-                        {conversation.length > 0 &&
-                            <div className={styles["chat-header-reset-button"]} onClick={() => {
-                                setConversation([]);
-                                setSources([]);
-                            }}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <path d="M14 15L10 19L14 23" stroke-width="2" />
-                                    <path d="M5.93782 15.5C5.16735 14.1655 4.85875 12.6141 5.05989 11.0863C5.26102 9.55856 5.96064 8.13986 7.05025 7.05025C8.13986 5.96064 9.55856 5.26102 11.0863 5.05989C12.6141 4.85875 14.1655 5.16735 15.5 5.93782C16.8345 6.70829 17.8775 7.89757 18.4672 9.32122C19.0568 10.7449 19.1603 12.3233 18.7615 13.8117C18.3627 15.3002 17.4838 16.6154 16.2613 17.5535C15.0388 18.4915 13.5409 19 12 19" strokeWidth="2" strokeLinecap="round" />
-                                </svg>
+                    {conversation.length > 0 ? (
+                        <>
+                            <div className={styles["chat-header"]}>
+                                {conversation.length > 0 &&
+                                    <div className={styles["chat-header-reset-button"]} onClick={() => {
+                                        setConversation([]);
+                                        setSources([]);
+                                    }}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <path d="M14 15L10 19L14 23" stroke-width="2" />
+                                            <path d="M5.93782 15.5C5.16735 14.1655 4.85875 12.6141 5.05989 11.0863C5.26102 9.55856 5.96064 8.13986 7.05025 7.05025C8.13986 5.96064 9.55856 5.26102 11.0863 5.05989C12.6141 4.85875 14.1655 5.16735 15.5 5.93782C16.8345 6.70829 17.8775 7.89757 18.4672 9.32122C19.0568 10.7449 19.1603 12.3233 18.7615 13.8117C18.3627 15.3002 17.4838 16.6154 16.2613 17.5535C15.0388 18.4915 13.5409 19 12 19" strokeWidth="2" strokeLinecap="round" />
+                                        </svg>
 
-                            </div>}
-                        CONVERSATION
-                    </div>
-                    <div
-                        className={styles["chat-message-container"]}>
-                        {
-                            conversation.map((message, index) => {
-                                return (
-                                    <ChatMessage
-                                        key={index}
-                                        role={message.role}
-                                        content={message.content}
-                                    />
-                                );
-                            })
-                        }
-                    </div>
+                                    </div>}
+                                CONVERSATION
+                            </div>
+                            <div
+                                className={styles["chat-message-container"]}>
+                                {
+                                    conversation.map((message, index) => {
+                                        return (
+                                            <ChatMessage
+                                                key={index}
+                                                role={message.role}
+                                                content={message.content}
+                                            />
+                                        );
+                                    })
+                                }
+                            </div></>) :
+                        <div className="flex-row flex-center text-large text-secondary">
+                            Ask me something, anything!
+                        </div>
+
+                    }
                     <div className={styles["chat-input-container"]}>
 
                         <input value={input}
@@ -228,28 +262,51 @@ export default function Chat() {
 
 
                     </div>
-                </div>
-                <div className={styles["sources-container"]}>
-                    <div className={styles["sources-header"]}>
-                        SOURCES
-                    </div>
                     {
-                        sources.map((source, index) => {
-                            return (
-                                <div key={index} className={styles["source"]}>
-                                    <div className={styles["source-url"]}>
-                                        {source.link}
-                                    </div>
-                                    <a href={source.link} className={styles["source-title"]} target="_blank">
-                                        {source.title}
-                                    </a>
-                                    <div className={styles["source-description"]}>
-                                        {source.description}
-                                    </div>
-                                </div>)
-                        })
+                        conversation.length == 0 && (
+                            <div className={styles["example-input-container"]}>
+                                {
+                                    ["Tell me about python", "What time is it in the UK?", "How do I create a basic server in cpp?", "What API libraries are there in python? Include some code please"].map((exampleInput) => {
+                                        return (
+                                            <div className={classNames(styles["example-input"], "text-small", "text-primary")} onClick={() => {
+                                                sendMessage(exampleInput);
+                                            }}>
+                                                {exampleInput}
+                                            </div>
+                                        )
+                                    })
+
+
+                                }
+
+
+                            </div>
+
+                        )
                     }
-                </div>
+                </div>{
+                    conversation.length > 0 &&
+                    <div className={styles["sources-container"]}>
+                        <div className={styles["sources-header"]}>
+                            SOURCES
+                        </div>
+                        {
+                            sources.map((source, index) => {
+                                return (
+                                    <div key={index} className={styles["source"]}>
+                                        <div className={styles["source-url"]}>
+                                            {source.link}
+                                        </div>
+                                        <a href={source.link} className={styles["source-title"]} target="_blank">
+                                            {source.title}
+                                        </a>
+                                        <div className={styles["source-description"]}>
+                                            {source.description}
+                                        </div>
+                                    </div>)
+                            })
+                        }
+                    </div>}
 
             </div>
         </div>
