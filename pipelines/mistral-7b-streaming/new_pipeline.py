@@ -81,7 +81,6 @@ class Mistral7B:
     def inference(
         self, prompts: list[list[dict[str, str]]], kwargs: ModelKwargs
     ) -> Stream[list[dict[str, str]]]:
-
         streamer = ChatStreamer(
             self.tokenizer,
             skip_special_tokens=True,
