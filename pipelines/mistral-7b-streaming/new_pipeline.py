@@ -19,6 +19,7 @@ class ChatStreamer(TextIteratorStreamer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.index = 0
+        self.returned_length = 0
 
     def __next__(self):
         value = self.text_queue.get(timeout=self.timeout, block=True)
@@ -39,7 +40,7 @@ class ChatStreamer(TextIteratorStreamer):
             self.next_tokens_are_prompt = False
             return
 
-        if True:
+        if False:
             self.token_cache.extend(value.tolist())
             text = self.tokenizer.decode(self.token_cache, **self.decode_kwargs)
 
@@ -54,6 +55,17 @@ class ChatStreamer(TextIteratorStreamer):
             else:
                 printable_text = text[self.print_len : text.rfind(" ") + 1]
                 self.print_len += len(printable_text)
+        else:
+            self.token_cache.extend(value.tolist())
+            printable_text = self.tokenizer.decode(
+                self.token_cache, **self.decode_kwargs
+            )
+
+            new_length = len(printable_text)
+            old_length = self.returned_length
+
+            printable_text = printable_text[old_length:new_length]
+            self.returned_length = new_length
 
         self.on_finalized_text(printable_text)
 

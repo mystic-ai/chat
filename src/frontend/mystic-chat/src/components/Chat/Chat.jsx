@@ -3,33 +3,49 @@ import classNames from 'classnames';
 import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import Markdown from 'react-markdown';
-import { CopyBlock, nord } from "react-code-blocks";
+// import { CopyBlock, dracula } from "react-code-blocks";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import syntaxHighlighterStyleNightOwl from "./SHStyle";
+
 
 function ChatMessage({ role, content }) {
     return (
         <div className={classNames(styles["chat-message"], role === "assistant" ? styles["chat-box-assistant"] : undefined)}>
             <Image alt="chat-user" src={role === "assistant" ? "/assets/mystic-icon.svg" : "/assets/user-icon.svg"} width={40} height={40} />
             <div className={styles["chat-message-content"]}>
-                <Markdown className={styles["markdown"]} components={{
+                {content !== "" ? <Markdown className={styles["markdown"]} components={{
                     code(_props) {
                         if (
                             _props.children !== undefined &&
                             _props.children.includes("\n")
                         ) {
                             return (
-                                <CopyBlock
-                                    text={_props.children}
-                                    language={_props.className !== undefined && _props.className.replace("language-", "")}
-                                    showLineNumbers={true}
-                                    theme={nord}
-                                    wrapLines={true}
+                                // <CopyBlock
+                                //     text={_props.children}
+                                //     language={_props.className !== undefined && _props.className.replace("language-", "")}
+                                //     // showLineNumbers={true}
+                                //     theme={dracula}
+                                //     wrapLines={true}
+                                //     customStyle={{
+                                //         fontSize: "14px",
+                                //         display: "flex",
+                                //         // maxWidth: "100%",
+                                //         maxWidth: "600px",
+                                //         width: "100%",
+                                //     }}
+                                // />
+                                <SyntaxHighlighter language={_props.className !== undefined && _props.className.replace("language-", "")}
+                                    style={syntaxHighlighterStyleNightOwl}
                                     customStyle={{
                                         fontSize: "14px",
                                         display: "flex",
-                                        maxWidth: "100%",
+                                        maxWidth: "525px",
                                         width: "100%",
+                                        borderRadius: "5px",
                                     }}
-                                />
+                                >
+                                    {_props.children}
+                                </SyntaxHighlighter>
                             );
                         }
 
@@ -39,7 +55,8 @@ function ChatMessage({ role, content }) {
                     },
                 }}>
                     {content}
-                </Markdown>
+
+                </Markdown> : <div style={{ height: "100%", width: "30px" }} className={styles["loader"]} ></div>}
             </div>
         </div>
     )
@@ -100,10 +117,23 @@ export default function Chat() {
         let newConversation = [...conversation, {
             role: "user",
             content: inputUsing
+        }, {
+            role: "assistant",
+            content: ""
+
         }];
+        // let newConversation = [...conversation, {
+        //     role: "user",
+        //     content: inputUsing
+        // },];
         setInput("");
-        setConversation(newConversation);
         let sourcesUpdated = false;
+        // newConversation.push({
+
+        //     role: "assistant",
+        //     content: ""
+        // });
+        setConversation(newConversation);
 
 
         fetch("/v1/runs/", {
@@ -116,7 +146,7 @@ export default function Chat() {
                     {
                         type: "array",
                         value: [
-                            newConversation
+                            newConversation.slice(0, newConversation.length - 1)
                         ]
                     }, {
                         type: "dictionary",
@@ -132,7 +162,6 @@ export default function Chat() {
 
             reader.read().then(function processText({ done, value }) {
                 if (done) {
-                    console.log("Stream complete");
                     setModelStreaming(false);
                     return;
                 }
@@ -157,7 +186,7 @@ export default function Chat() {
                 jsonsToParse.forEach(jsonString => {
                     const json = JSON.parse(jsonString);
                     let newConversation2 = newConversation.slice();
-
+                    console.log(newConversation2);
                     if (newConversation2.length > 0 && newConversation2[newConversation2.length - 1].role === "assistant") {
                         newConversation2[newConversation2.length - 1].content += json.outputs[0].value[0].content;
                     } else {
@@ -169,7 +198,6 @@ export default function Chat() {
                     }
                     setConversation(newConversation2);
 
-                    console.log(json);
                     newConversation = newConversation2;
                     if (!sourcesUpdated) {
                         setSources(json.outputs[1].value);
@@ -185,23 +213,18 @@ export default function Chat() {
                 });
 
                 reader.read().then(processText).catch(error => {
-                    // setModelStreaming(false);
-                    // console.error(error);
+                    console.error(error);
                 });
 
             }).finally(() => {
-                console.log("finally1")
             }).catch(error => {
-                // setModelStreaming(false);
-                // console.error(error);
+                console.error(error);
             })
 
         }).finally(() => {
-            // setModelStreaming(false);
-            console.log("finally2")
+
         }).catch(error => {
-            // setModelStreaming(false);
-            // console.error(error);
+            console.error(error);
         });
     }
 
@@ -266,11 +289,12 @@ export default function Chat() {
                         conversation.length == 0 && (
                             <div className={styles["example-input-container"]}>
                                 {
-                                    ["Tell me about python", "What time is it in the UK?", "How do I create a basic server in cpp?", "What API libraries are there in python? Include some code please"].map((exampleInput) => {
+                                    ["Tell me about python", "What time is it in the UK?", "How do I create a basic server in cpp?", "What API libraries are there in python? Include some code please"].map((exampleInput, index) => {
                                         return (
                                             <div className={classNames(styles["example-input"], "text-small", "text-primary")} onClick={() => {
                                                 sendMessage(exampleInput);
-                                            }}>
+                                            }}
+                                                key={index}>
                                                 {exampleInput}
                                             </div>
                                         )

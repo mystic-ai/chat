@@ -56,6 +56,9 @@ spec:
             requests:
               memory: "200Mi"
               cpu: "200m"
+          env:
+            - name: MODEL_URL
+              value: "http://mystic-chat-llm-service:14300"
 ---
 apiVersion: apps/v1
 kind: Deployment
