@@ -34,39 +34,39 @@ services:
       - "../src/frontend/mystic-chat/public:/app/public/"
       - "../src/frontend/mystic-chat/pages:/app/pages/"
   # ------------------------------ LLM ------------------------------
-  mystic-chat-llm:
-    image: registry.mystic.ai/mystic-chat:latest
-    container_name: mystic-chat-llm
-    build:
-      context: ../pipelines/mistral-7b-streaming
-      dockerfile: pipeline.dockerfile
-      args:
-        INSTALL_DEV: ${INSTALL_DEV-true}
-    command:
-      [
-        "uvicorn",
-        "pipeline.container.startup:create_app",
-        "--host",
-        "0.0.0.0",
-        "--port",
-        "14300",
-        "--factory",
-        "--reload"
-      ]
-    environment:
-      - DEBUG=1
-      - LOG_LEVEL=DEBUG
-      - FASTAPI_ENV=development
-    volumes:
-      - ./service_volumes/llm/:/root/.cache
-      - ../pipelines/mistral-7b-streaming:/app
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [ gpu ]
+  # mystic-chat-llm:
+  #   image: registry.mystic.ai/mystic-chat:latest
+  #   container_name: mystic-chat-llm
+  #   build:
+  #     context: ../pipelines/mistral-7b-streaming
+  #     dockerfile: pipeline.dockerfile
+  #     args:
+  #       INSTALL_DEV: ${INSTALL_DEV-true}
+  #   command:
+  #     [
+  #       "uvicorn",
+  #       "pipeline.container.startup:create_app",
+  #       "--host",
+  #       "0.0.0.0",
+  #       "--port",
+  #       "14300",
+  #       "--factory",
+  #       "--reload"
+  #     ]
+  #   environment:
+  #     - DEBUG=1
+  #     - LOG_LEVEL=DEBUG
+  #     - FASTAPI_ENV=development
+  #   volumes:
+  #     - ./service_volumes/llm/:/root/.cache
+  #     - ../pipelines/mistral-7b-streaming:/app
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities: [ gpu ]
 
   # ------------------------------ Nginx ------------------------------
   nginx:

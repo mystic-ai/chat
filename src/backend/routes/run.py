@@ -91,16 +91,23 @@ async def run(
     print(run_create_schema.dict(), flush=True)
     run_create_schema.inputs[0].value[0].insert(0, system_prompt)
 
-    model_url = os.environ.get("MODEL_URL")
-    model_url += "/v4/runs/stream"
+    run_create_dict = run_create_schema.dict()
+
+    run_create_dict["pipeline"] = "meta/llama-3-8b:v1"
+
+    model_url = "https://www.mystic.ai/v4/runs/stream"
+    bearer = os.environ.get("MYSTIC_API_TOKEN")
 
     async def stream_response():
         client = AsyncClient()
         async with client.stream(
             "POST",
             model_url,
-            headers={"Content-Type": "application/json"},
-            json=run_create_schema.dict(),
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + bearer,
+            },
+            json=run_create_dict,
         ) as response:
             async for chunk in response.aiter_lines():
                 # print(chunk, flush=True)
