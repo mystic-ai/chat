@@ -93,7 +93,7 @@ async def run(
 
     run_create_dict = run_create_schema.dict()
 
-    run_create_dict["pipeline"] = "paulh/mistral-7b-streaming:v4"
+    run_create_dict["pipeline"] = "meta/llama-3-8b:v1"
 
     model_url = "https://www.mystic.ai/v4/runs/stream"
     bearer = os.environ.get("MYSTIC_API_TOKEN")
